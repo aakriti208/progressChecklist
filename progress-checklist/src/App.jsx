@@ -66,9 +66,18 @@ const ProgressChecklist = () => {
     return { completed: {}, texts: {}, lastReset: new Date().toDateString() };
   });
 
+  const [customTasks, setCustomTasks] = useState(() => {
+    const saved = localStorage.getItem('reactProgressChecklistCustom');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('reactProgressChecklist', JSON.stringify(tasks));
   }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem('reactProgressChecklistCustom', JSON.stringify(customTasks));
+  }, [customTasks]);
 
   const toggleTask = (taskId) => {
     setTasks(prev => ({
@@ -104,8 +113,33 @@ const ProgressChecklist = () => {
     }));
   };
 
+  const addNewTask = (phaseId) => {
+    const newTask = {
+      id: Date.now(),
+      phase: phaseId,
+      text: '',
+      daily: false,
+      isCustom: true
+    };
+    setCustomTasks(prev => [...prev, newTask]);
+  };
+
+  const deleteTask = (taskId) => {
+    setCustomTasks(prev => prev.filter(task => task.id !== taskId));
+    setTasks(prev => {
+      const { [taskId]: _, ...remainingCompleted } = prev.completed;
+      const { [taskId]: __, ...remainingTexts } = prev.texts;
+      return {
+        ...prev,
+        completed: remainingCompleted,
+        texts: remainingTexts
+      };
+    });
+  };
+
+  const allTasks = [...initialTasks, ...customTasks];
   const completedCount = Object.values(tasks.completed).filter(Boolean).length;
-  const totalCount = initialTasks.length;
+  const totalCount = allTasks.length;
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
@@ -232,18 +266,51 @@ const ProgressChecklist = () => {
                 <div style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937' }}>{phase.title}</div>
               </div>
               <div style={{ color: '#6b7280', fontSize: '14px', marginBottom: '15px' }}>{phase.subtitle}</div>
-              
+
               {/* Tasks for this phase */}
-              {initialTasks.filter(task => task.phase === phase.id).map(task => (
-                <Task 
+              {allTasks.filter(task => task.phase === phase.id).map(task => (
+                <Task
                   key={task.id}
                   task={task}
                   completed={tasks.completed[task.id]}
                   customText={tasks.texts[task.id]}
                   onToggle={() => toggleTask(task.id)}
                   onTextChange={(newText) => updateTaskText(task.id, newText)}
+                  onDelete={task.isCustom ? () => deleteTask(task.id) : null}
                 />
               ))}
+
+              {/* Add New Task Button */}
+              <button
+                onClick={() => addNewTask(phase.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 10px',
+                  marginTop: '8px',
+                  background: 'transparent',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  color: '#6b7280',
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = '#f9fafb';
+                  e.target.style.borderColor = '#9ca3af';
+                  e.target.style.color = '#374151';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.borderColor = '#d1d5db';
+                  e.target.style.color = '#6b7280';
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>+</span>
+                Add task
+              </button>
             </div>
           ))}
         </div>
@@ -252,8 +319,8 @@ const ProgressChecklist = () => {
   );
 };
 
-const Task = ({ task, completed, customText, onToggle, onTextChange }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete }) => {
+  const [isEditing, setIsEditing] = useState(task.text === '');
   const [editText, setEditText] = useState(customText || task.text);
 
   const handleBlur = () => {
@@ -352,6 +419,30 @@ const Task = ({ task, completed, customText, onToggle, onTextChange }) => {
         }}>
           Daily
         </span>
+      )}
+
+      {onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: '#9ca3af',
+            cursor: 'pointer',
+            fontSize: '16px',
+            marginLeft: '8px',
+            padding: '0 4px',
+            transition: 'color 0.2s'
+          }}
+          onMouseOver={(e) => e.target.style.color = '#ef4444'}
+          onMouseOut={(e) => e.target.style.color = '#9ca3af'}
+          title="Delete task"
+        >
+          ×
+        </button>
       )}
     </div>
   );
