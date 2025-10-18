@@ -124,8 +124,10 @@ const ProgressChecklist = () => {
     setCustomTasks(prev => [...prev, newTask]);
   };
 
-  const deleteTask = (taskId) => {
-    setCustomTasks(prev => prev.filter(task => task.id !== taskId));
+  const deleteTask = (taskId, isCustom) => {
+    if (isCustom) {
+      setCustomTasks(prev => prev.filter(task => task.id !== taskId));
+    }
     setTasks(prev => {
       const { [taskId]: _, ...remainingCompleted } = prev.completed;
       const { [taskId]: __, ...remainingTexts } = prev.texts;
@@ -276,7 +278,7 @@ const ProgressChecklist = () => {
                   customText={tasks.texts[task.id]}
                   onToggle={() => toggleTask(task.id)}
                   onTextChange={(newText) => updateTaskText(task.id, newText)}
-                  onDelete={task.isCustom ? () => deleteTask(task.id) : null}
+                  onDelete={() => deleteTask(task.id, task.isCustom)}
                 />
               ))}
 
@@ -330,6 +332,8 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
     }
   };
 
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div style={{
       display: 'flex',
@@ -339,10 +343,17 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
       borderRadius: '8px',
       transition: 'background 0.2s',
       opacity: completed ? 0.6 : 1,
-      cursor: 'pointer'
+      cursor: 'pointer',
+      position: 'relative'
     }}
-    onMouseOver={(e) => e.currentTarget.style.background = '#f9fafb'}
-    onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+    onMouseOver={(e) => {
+      e.currentTarget.style.background = '#f9fafb';
+      setIsHovered(true);
+    }}
+    onMouseOut={(e) => {
+      e.currentTarget.style.background = 'transparent';
+      setIsHovered(false);
+    }}
     >
       <div 
         onClick={onToggle}
@@ -421,7 +432,7 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
         </span>
       )}
 
-      {onDelete && (
+      {isHovered && (
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -432,10 +443,11 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
             border: 'none',
             color: '#9ca3af',
             cursor: 'pointer',
-            fontSize: '16px',
+            fontSize: '18px',
             marginLeft: '8px',
             padding: '0 4px',
-            transition: 'color 0.2s'
+            transition: 'color 0.2s',
+            lineHeight: '1'
           }}
           onMouseOver={(e) => e.target.style.color = '#ef4444'}
           onMouseOut={(e) => e.target.style.color = '#9ca3af'}
