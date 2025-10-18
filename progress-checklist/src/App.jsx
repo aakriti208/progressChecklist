@@ -71,6 +71,11 @@ const ProgressChecklist = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [deletedTasks, setDeletedTasks] = useState(() => {
+    const saved = localStorage.getItem('reactProgressChecklistDeleted');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('reactProgressChecklist', JSON.stringify(tasks));
   }, [tasks]);
@@ -78,6 +83,10 @@ const ProgressChecklist = () => {
   useEffect(() => {
     localStorage.setItem('reactProgressChecklistCustom', JSON.stringify(customTasks));
   }, [customTasks]);
+
+  useEffect(() => {
+    localStorage.setItem('reactProgressChecklistDeleted', JSON.stringify(deletedTasks));
+  }, [deletedTasks]);
 
   const toggleTask = (taskId) => {
     setTasks(prev => ({
@@ -127,6 +136,8 @@ const ProgressChecklist = () => {
   const deleteTask = (taskId, isCustom) => {
     if (isCustom) {
       setCustomTasks(prev => prev.filter(task => task.id !== taskId));
+    } else {
+      setDeletedTasks(prev => [...prev, taskId]);
     }
     setTasks(prev => {
       const { [taskId]: _, ...remainingCompleted } = prev.completed;
@@ -139,7 +150,7 @@ const ProgressChecklist = () => {
     });
   };
 
-  const allTasks = [...initialTasks, ...customTasks];
+  const allTasks = [...initialTasks.filter(task => !deletedTasks.includes(task.id)), ...customTasks];
   const completedCount = Object.values(tasks.completed).filter(Boolean).length;
   const totalCount = allTasks.length;
   const percentage = Math.round((completedCount / totalCount) * 100);
