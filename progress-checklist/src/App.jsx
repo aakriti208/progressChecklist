@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './ProgressChecklist.css';
 
 const ProgressChecklist = () => {
   const initialTasks = [
@@ -156,129 +157,55 @@ const ProgressChecklist = () => {
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div style={{ 
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
-      background: '#f5f5f5',
-      padding: '20px',
-      minHeight: '100vh'
-    }}>
-      <div style={{ 
-        maxWidth: '900px',
-        margin: '0 auto',
-        background: 'white',
-        borderRadius: '16px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-        overflow: 'hidden'
-      }}>
+    <div className="app-container">
+      <div className="main-card">
         {/* Header */}
-        <div style={{
-          background: '#ffffff',
-          color: '#1f2937',
-          padding: '30px',
-          textAlign: 'center',
-          borderBottom: '1px solid #e5e7eb'
-        }}>
-          <h1 style={{ fontSize: '28px', marginBottom: '8px' }}>Progress Checklist</h1>
-          <p style={{ opacity: 0.9, fontSize: '16px', margin: 0 }}>Node.js → Projects → Interviews → Job</p>
-          <div style={{
-            background: '#e5e7eb',
-            height: '8px',
-            borderRadius: '4px',
-            marginTop: '20px',
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              background: '#6366f1',
-              height: '100%',
-              width: `${percentage}%`,
-              transition: 'width 0.3s ease'
-            }}></div>
+        <div className="header">
+          <h1>Progress Checklist</h1>
+          <p>Node.js → Projects → Interviews → Job</p>
+          <div className="progress-bar-container">
+            <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
           </div>
         </div>
 
         {/* Content */}
-        <div style={{ padding: '30px' }}>
+        <div className="content">
           {/* Controls */}
-          <div style={{
-            display: 'flex',
-            gap: '10px',
-            marginBottom: '20px',
-            padding: '15px',
-            background: '#fef3c7',
-            borderRadius: '8px',
-            borderLeft: '4px solid #fbbf24'
-          }}>
-            <div style={{ flex: 1, fontSize: '14px', color: '#78350f' }}>
+          <div className="controls">
+            <div className="controls-text">
               💡 <strong>Daily tasks</strong> reset each day. <strong>Regular tasks</strong> stay checked. Click text to edit any task!
             </div>
-            <button 
-              onClick={resetDailyTasks}
-              style={{
-                background: '#6b7280',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-              onMouseOver={(e) => e.target.style.background = '#4b5563'}
-              onMouseOut={(e) => e.target.style.background = '#6b7280'}
-            >
+            <button onClick={resetDailyTasks} className="reset-button">
               Reset Daily Tasks
             </button>
           </div>
 
           {/* Stats */}
-          <div style={{
-            display: 'flex',
-            gap: '20px',
-            marginBottom: '30px',
-            padding: '20px',
-            background: '#f9fafb',
-            borderRadius: '8px'
-          }}>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#6366f1' }}>{completedCount}</div>
-              <div style={{ fontSize: '12px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '4px' }}>Completed</div>
+          <div className="stats-container">
+            <div className="stat-item">
+              <div className="stat-value">{completedCount}</div>
+              <div className="stat-label">Completed</div>
             </div>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#6366f1' }}>{totalCount}</div>
-              <div style={{ fontSize: '12px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '4px' }}>Total Tasks</div>
+            <div className="stat-item">
+              <div className="stat-value">{totalCount}</div>
+              <div className="stat-label">Total Tasks</div>
             </div>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#6366f1' }}>{percentage}%</div>
-              <div style={{ fontSize: '12px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '4px' }}>Progress</div>
+            <div className="stat-item">
+              <div className="stat-value">{percentage}%</div>
+              <div className="stat-label">Progress</div>
             </div>
           </div>
 
           {/* Phases */}
           {phases.map(phase => (
-            <div key={phase.id} style={{
-              marginBottom: '30px',
-              borderLeft: '4px solid #d1d5db',
-              paddingLeft: '20px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <div style={{
-                  background: '#9ca3af',
-                  color: 'white',
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  marginRight: '12px',
-                  fontSize: '14px'
-                }}>
+            <div key={phase.id} className="phase-container">
+              <div className="phase-header">
+                <div className="phase-number">
                   {phase.id}
                 </div>
-                <div style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937' }}>{phase.title}</div>
+                <div className="phase-title">{phase.title}</div>
               </div>
-              <div style={{ color: '#6b7280', fontSize: '14px', marginBottom: '15px' }}>{phase.subtitle}</div>
+              <div className="phase-subtitle">{phase.subtitle}</div>
 
               {/* Tasks for this phase */}
               {allTasks.filter(task => task.phase === phase.id).map(task => (
@@ -294,34 +221,8 @@ const ProgressChecklist = () => {
               ))}
 
               {/* Add New Task Button */}
-              <button
-                onClick={() => addNewTask(phase.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 10px',
-                  marginTop: '8px',
-                  background: 'transparent',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  color: '#6b7280',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = '#f9fafb';
-                  e.target.style.borderColor = '#9ca3af';
-                  e.target.style.color = '#374151';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = 'transparent';
-                  e.target.style.borderColor = '#d1d5db';
-                  e.target.style.color = '#6b7280';
-                }}
-              >
-                <span style={{ fontSize: '16px' }}>+</span>
+              <button onClick={() => addNewTask(phase.id)} className="add-task-button">
+                <span className="add-task-icon">+</span>
                 Add task
               </button>
             </div>
@@ -346,45 +247,16 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      padding: '12px',
-      marginBottom: '8px',
-      borderRadius: '8px',
-      transition: 'background 0.2s',
-      opacity: completed ? 0.6 : 1,
-      cursor: 'pointer',
-      position: 'relative'
-    }}
-    onMouseOver={(e) => {
-      e.currentTarget.style.background = '#f9fafb';
-      setIsHovered(true);
-    }}
-    onMouseOut={(e) => {
-      e.currentTarget.style.background = 'transparent';
-      setIsHovered(false);
-    }}
+    <div
+      className={`task-row ${completed ? 'completed' : ''}`}
+      onMouseOver={() => setIsHovered(true)}
+      onMouseOut={() => setIsHovered(false)}
     >
-      <div 
+      <div
         onClick={onToggle}
-        style={{
-          width: '20px',
-          height: '20px',
-          border: '2px solid #d1d5db',
-          borderRadius: '4px',
-          marginRight: '12px',
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s',
-          cursor: 'pointer',
-          background: completed ? '#9ca3af' : 'transparent',
-          borderColor: completed ? '#9ca3af' : '#d1d5db'
-        }}
+        className={`task-checkbox ${completed ? 'checked' : ''}`}
       >
-        {completed && <span style={{ color: 'white', fontSize: '14px' }}>✓</span>}
+        {completed && <span className="task-checkbox-icon">✓</span>}
       </div>
       
       {isEditing ? (
@@ -394,51 +266,22 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
           onChange={(e) => setEditText(e.target.value)}
           onBlur={handleBlur}
           autoFocus
-          style={{
-            flex: 1,
-            color: '#374151',
-            lineHeight: '1.5',
-            padding: '2px 4px',
-            borderRadius: '4px',
-            border: '2px solid #d1d5db',
-            background: '#f9fafb',
-            outline: 'none',
-            fontSize: '14px'
-          }}
+          className="task-input"
         />
       ) : (
-        <div 
+        <div
           onClick={(e) => {
             e.stopPropagation();
             setIsEditing(true);
           }}
-          style={{
-            flex: 1,
-            color: '#374151',
-            lineHeight: '1.5',
-            padding: '2px 4px',
-            borderRadius: '4px',
-            cursor: 'text',
-            minHeight: '24px',
-            textDecoration: completed ? 'line-through' : 'none'
-          }}
+          className={`task-text ${completed ? 'completed' : ''}`}
         >
           {customText || task.text}
         </div>
       )}
       
       {task.daily && (
-        <span style={{
-          background: '#fbbf24',
-          color: '#78350f',
-          fontSize: '10px',
-          padding: '2px 6px',
-          borderRadius: '4px',
-          fontWeight: '600',
-          marginLeft: '8px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px'
-        }}>
+        <span className="daily-badge">
           Daily
         </span>
       )}
@@ -449,19 +292,7 @@ const Task = ({ task, completed, customText, onToggle, onTextChange, onDelete })
             e.stopPropagation();
             onDelete();
           }}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#9ca3af',
-            cursor: 'pointer',
-            fontSize: '18px',
-            marginLeft: '8px',
-            padding: '0 4px',
-            transition: 'color 0.2s',
-            lineHeight: '1'
-          }}
-          onMouseOver={(e) => e.target.style.color = '#ef4444'}
-          onMouseOut={(e) => e.target.style.color = '#9ca3af'}
+          className="delete-button"
           title="Delete task"
         >
           ×
